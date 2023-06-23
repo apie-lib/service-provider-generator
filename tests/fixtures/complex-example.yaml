@@ -1,0 +1,50 @@
+# Apie core services
+services:
+  apie.bounded_context.hashmap_factory:
+      class: Apie\ApieBundle\Wrappers\BoundedContextHashmapFactory
+      arguments:
+        - "%apie.bounded_contexts%"
+
+  Apie\ApieBundle\Routing\ApieRouteLoader:
+    arguments:
+      - "@apie.route_definitions.provider"
+      - "@apie.bounded_context.hashmap"
+      - '%apie.cms.base_url%'
+      - '%apie.rest_api.base_url%'
+    tags: [routing.loader]
+
+  Apie\ApieBundle\ContextBuilders\ServiceContextBuilder:
+    arguments:
+      - !tagged_locator { tag: 'apie.context' }
+    tags: [apie.core.context_builder]
+
+  Apie\ApieBundle\ContextBuilders\SessionContextBuilder:
+    arguments:
+      - '@request_stack'
+    tags: [apie.core.context_builder]
+
+  Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder:
+    arguments:
+      - '@?Symfony\Component\Security\Csrf\CsrfTokenManagerInterface'
+    tags: [apie.core.context_builder]
+
+  Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer:
+    arguments:
+      - '@Apie\ApieBundle\Wrappers\BoundedContextSelected'
+    tags:
+      - apie.datalayer
+
+  Apie\ApieBundle\Wrappers\BoundedContextSelected:
+    arguments:
+      - '@request_stack'
+      - '@Apie\Core\BoundedContext\BoundedContextHashmap'
+    tags: ['apie.context']
+
+  Apie\ApieBundle\EventListeners\RenderErrorListener:
+    arguments:
+      - '@?Apie\HtmlBuilders\Factories\ComponentFactory'
+      - '@?Apie\HtmlBuilders\Interfaces\ComponentRendererInterface'
+      - '@?Twig\Environment'
+      - '%apie.cms.base_url%'
+      - '%apie.cms.error_template%'
+    tags: ['kernel.event_subscriber']

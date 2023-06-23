@@ -1,0 +1,32 @@
+<?php
+namespace Example\OfSomeClass;
+
+use Apie\ServiceProviderGenerator\UseGeneratedMethods;
+use Illuminate\Support\ServiceProvider;
+
+class Test extends ServiceProvider
+{
+    use UseGeneratedMethods;
+
+    function register()
+    {
+        $this->app->singleton(
+            \App\FactoryExample::class,
+            function ($app) {
+                return new \App\FactoryExample(
+                    '42',
+                    $app->make('service_container')
+                );
+            }
+        );
+        $this->app->singleton(
+            \App\NullExample::class,
+            function ($app) {
+                return new \App\NullExample(
+        
+                );
+            }
+        );
+        
+    }
+}

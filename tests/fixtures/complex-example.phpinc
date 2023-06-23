@@ -1,0 +1,94 @@
+<?php
+namespace Example\OfSomeClass;
+
+use Apie\ServiceProviderGenerator\UseGeneratedMethods;
+use Illuminate\Support\ServiceProvider;
+
+class Test extends ServiceProvider
+{
+    use UseGeneratedMethods;
+
+    function register()
+    {
+        $this->app->singleton(
+            'apie.bounded_context.hashmap_factory',
+            function ($app) {
+                return new \Apie\ApieBundle\Wrappers\BoundedContextHashmapFactory(
+                    $this->parseArgument('%apie.bounded_contexts%')
+                );
+            }
+        );
+        $this->app->singleton(
+            \Apie\ApieBundle\Routing\ApieRouteLoader::class,
+            function ($app) {
+                return new \Apie\ApieBundle\Routing\ApieRouteLoader(
+                    $app->make('apie.route_definitions.provider'),
+                    $app->make('apie.bounded_context.hashmap'),
+                    $this->parseArgument('%apie.cms.base_url%'),
+                    $this->parseArgument('%apie.rest_api.base_url%')
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\Routing\ApieRouteLoader::class], 'routing.loader');
+        $this->app->singleton(
+            \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class,
+            function ($app) {
+                return new \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder(
+                    $this->getTaggedServicesServiceLocator('apie.context')
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class], 'apie.core.context_builder');
+        $this->app->singleton(
+            \Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class,
+            function ($app) {
+                return new \Apie\ApieBundle\ContextBuilders\SessionContextBuilder(
+                    $app->make('request_stack')
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class], 'apie.core.context_builder');
+        $this->app->singleton(
+            \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class,
+            function ($app) {
+                return new \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder(
+                    $app->bound(\Symfony\Component\Security\Csrf\CsrfTokenManagerInterface::class) ? $app->make(\Symfony\Component\Security\Csrf\CsrfTokenManagerInterface::class) : null
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class], 'apie.core.context_builder');
+        $this->app->singleton(
+            \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class,
+            function ($app) {
+                return new \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer(
+                    $app->make(\Apie\ApieBundle\Wrappers\BoundedContextSelected::class)
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class], 'apie.datalayer');
+        $this->app->singleton(
+            \Apie\ApieBundle\Wrappers\BoundedContextSelected::class,
+            function ($app) {
+                return new \Apie\ApieBundle\Wrappers\BoundedContextSelected(
+                    $app->make('request_stack'),
+                    $app->make(\Apie\Core\BoundedContext\BoundedContextHashmap::class)
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\Wrappers\BoundedContextSelected::class], 'apie.context');
+        $this->app->singleton(
+            \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
+            function ($app) {
+                return new \Apie\ApieBundle\EventListeners\RenderErrorListener(
+                    $app->bound(\Apie\HtmlBuilders\Factories\ComponentFactory::class) ? $app->make(\Apie\HtmlBuilders\Factories\ComponentFactory::class) : null,
+                    $app->bound(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class) ? $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class) : null,
+                    $app->bound(\Twig\Environment::class) ? $app->make(\Twig\Environment::class) : null,
+                    $this->parseArgument('%apie.cms.base_url%'),
+                    $this->parseArgument('%apie.cms.error_template%')
+                );
+            }
+        );
+        $this->app->tag([\Apie\ApieBundle\EventListeners\RenderErrorListener::class], 'kernel.event_subscriber');
+        
+    }
+}
