@@ -1,0 +1,11 @@
+services:
+    App\MethodCallExample:
+        calls:
+            - setFeature: ['42']
+            - setLogger: ['@logger']
+
+    App\FactoryMethodCallExample:
+        factory: [null, 'create']
+        calls:
+            - setFeature: ['42']
+            - setLogger: ['@logger']

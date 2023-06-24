@@ -1,11 +1,11 @@
 services:
   App\FactoryExample:
     class: App\FactoryExample
-    factory: [App\FactoryExampleFactory, 'create']
+    factory: ['@App\FactoryExampleFactory', 'create']
     arguments: [42, '@service_container']
 
   App\NullExample:
     factory: [null, 'create']
 
   App\FromServiceFactory:
-    factory: ['@StaticExampleFactory', 'publish']
+    factory: ['StaticExampleFactory', 'publish']

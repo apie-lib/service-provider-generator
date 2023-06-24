@@ -59,9 +59,9 @@ final class ServiceProviderGenerator
         }
         $factory = $serviceDefinition['factory'] ?? null;
         $className = $serviceDefinition['class'] ?? $serviceId;
+        $code = empty($serviceDefinition['calls']) ? 'return ' : '$service =';
         switch (get_debug_type($factory)) {
             case 'array':
-                $code = 'return ';
                 if (null === $factory[0]) {
                     $code .= $className . '::';
                 } else if(str_starts_with($factory[0], '@')) {
@@ -77,7 +77,7 @@ final class ServiceProviderGenerator
             case 'null':
                 $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4);
                 $code = CodeUtils::indent(
-                    'return new \\' . $className . '(' . PHP_EOL
+                    $code . 'new \\' . $className . '(' . PHP_EOL
                         . $argumentsCode
                         . ');', 
                     8
@@ -86,6 +86,14 @@ final class ServiceProviderGenerator
                 break;
             default:
                 throw new LogicException('Unknown factory type: ' . get_debug_type($factory));
+        }
+
+        foreach (($serviceDefinition['calls'] ?? []) as $methodDefinition)
+        {
+            $methodArguments = reset($methodDefinition);
+            $methodName = key($methodDefinition);
+            $methodCallCode = '$service->' . $methodName . '('. PHP_EOL . $this->createCodeForArgumentList($methodArguments ?? [], 4) . ');';
+            $code .= PHP_EOL . CodeUtils::indent($methodCallCode, 8);         
         }
         
         $tagCode = '';
@@ -109,6 +117,10 @@ final class ServiceProviderGenerator
                     }
                 }
             }
+        }
+
+        if (!empty($serviceDefinition['calls'])) {
+            $code .= PHP_EOL . PHP_EOL . '        return $service;';
         }
 
         $method = ($serviceDefinition['shared'] ?? false) ? 'bind' : 'singleton';
