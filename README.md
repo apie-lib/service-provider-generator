@@ -43,7 +43,7 @@ your package, so are highly likely not to be implemented.
 | autowire | No |
 | autoconfigure | No |
 | reading PHP 8 attributes | No |
-| deprecated | No |
+| deprecated | Yes |
 | resource + exclude | No |
 | arguments by index | Yes |
 | arguments by name | >= PHP8 code |
