@@ -13,18 +13,29 @@ class Test extends ServiceProvider
         $this->app->singleton(
             \App\FactoryExample::class,
             function ($app) {
-                return new \App\FactoryExample(
-                    '42',
-                    $app->make('service_container')
+                return App\FactoryExampleFactory::create(
+                        '42',
+                        $app
                 );
+                
             }
         );
         $this->app->singleton(
             \App\NullExample::class,
             function ($app) {
-                return new \App\NullExample(
-        
+                return App\NullExample::create(
+                
                 );
+                
+            }
+        );
+        $this->app->singleton(
+            \App\FromServiceFactory::class,
+            function ($app) {
+                return $this->app->make('StaticExampleFactory')->publish(
+                
+                );
+                
             }
         );
         

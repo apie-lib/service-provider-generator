@@ -1,0 +1,3 @@
+services:
+  SharedExample:
+    shared: false

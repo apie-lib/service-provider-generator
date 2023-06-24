@@ -1,6 +1,7 @@
 <?php
 namespace Apie\ServiceProviderGenerator;
 
+use LogicException;
 use Symfony\Component\Yaml\Tag\TaggedValue;
 use Symfony\Component\Yaml\Yaml;
 
@@ -14,6 +15,9 @@ final class ServiceProviderGenerator
         $registerMethodBody = '';
         $tags = [];
         foreach (($contents['services'] ?? []) as $serviceId => $serviceDefinition) {
+            if ($serviceDefinition['synthetic'] ?? false) {
+                continue;
+            }
             $registerMethodBody .= $this->generateServiceDefinition($serviceDefinition, $serviceId) . PHP_EOL;
         }
 
@@ -68,10 +72,22 @@ final class ServiceProviderGenerator
                 $code .= $factory[1] . '(' . PHP_EOL;
                 $code .= $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 8);
                 $code .= ');' . PHP_EOL;
+                $code = CodeUtils::indent($code, 8);
                 break;
-            // TODO: string?
+            case 'null':
+                $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4);
+                $code = CodeUtils::indent(
+                    'return new \\' . $className . '(' . PHP_EOL
+                        . $argumentsCode
+                        . ');', 
+                    8
+                );
+                    
+                break;
+            default:
+                throw new LogicException('Unknown factory type: ' . get_debug_type($factory));
         }
-        $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 12);
+        
         $tagCode = '';
         if ($serviceDefinition['tags'] ?? null) {
             foreach ($serviceDefinition['tags'] as $tag) {
@@ -95,12 +111,11 @@ final class ServiceProviderGenerator
             }
         }
 
-        return '$this->app->singleton(' . PHP_EOL
+        $method = ($serviceDefinition['shared'] ?? false) ? 'bind' : 'singleton';
+        return '$this->app->' . $method . '(' . PHP_EOL
             . '    ' . CodeUtils::renderString($serviceId) . ',' . PHP_EOL
             . '    function ($app) {' . PHP_EOL
-            . '        return new \\' . $className . '(' . PHP_EOL
-            . $argumentsCode
-            . '        );' . PHP_EOL
+            . $code . PHP_EOL
             . '    }' . PHP_EOL
             . ');' . $tagCode;
     }
@@ -122,12 +137,18 @@ final class ServiceProviderGenerator
             // TODO parse arrays recursively, fix indenting multiline
             return CodeUtils::renderString($argument);
         }
+        if ($argument === '@service_container') {
+            return '$app';
+        }
         if (str_starts_with($argument, '@?')) {
             $targetServiceId = CodeUtils::renderString(substr($argument, 2));
             return '$app->bound(' . $targetServiceId . ') ? $app->make(' . $targetServiceId . ') : null';
         }
-        if (str_starts_with($argument, '@')) {
+        if (str_starts_with($argument, '@') && !str_starts_with($argument, '@@')) {
             return '$app->make(' . CodeUtils::renderString(substr($argument, 1)) . ')';
+        }
+        if (str_starts_with($argument, '@@')) {
+            $argument = substr($argument, 1);
         }
         if (str_contains($argument, '%')) {
             return '$this->parseArgument(' . CodeUtils::renderString($argument) . ')';

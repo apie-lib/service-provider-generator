@@ -46,14 +46,14 @@ your package, so are highly likely not to be implemented.
 | deprecated | No |
 | resource + exclude | No |
 | arguments by index | Yes |
-| arguments by name | >= PHP8.1 code |
+| arguments by name | >= PHP8 code |
 | service references | Yes, not within array constants |
-| constant strings starting with '@' | No |
+| constant strings starting with '@' | Yes |
 | reading parameters | Mapped as Laravel config() |
 | reading environment variables | Mapped as laravel env() |
 | environment variable parsers | No |
 | !closure | No |
-| public/private services | No |
+| public/private services | NA |
 | tags | Only simple tags |
 | from_callable | No |
 | aliasing | Yes |
@@ -77,8 +77,8 @@ your package, so are highly likely not to be implemented.
 | @service_container | No |
 | !tagged_locator | Basic support |
 | !tagged_service | Basic support |
-| synthetic | No |
-| shared | No |
+| synthetic | Yes |
+| shared | Yes |
 
 
 

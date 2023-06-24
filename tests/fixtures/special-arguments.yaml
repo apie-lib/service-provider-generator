@@ -1,0 +1,5 @@
+services:
+  App\ClassExample:
+    arguments:
+      $container: "@service_container"
+      $domain: "@@test.nl"
