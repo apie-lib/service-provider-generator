@@ -18,7 +18,7 @@ final class ServiceProviderGenerator
             if ($serviceDefinition['synthetic'] ?? false) {
                 continue;
             }
-            $registerMethodBody .= $this->generateServiceDefinition($serviceDefinition, $serviceId) . PHP_EOL;
+            $registerMethodBody .= $this->generateServiceDefinition($serviceDefinition ?? [], $serviceId) . PHP_EOL;
         }
 
         $namespace = substr($className, 0, strrpos($className , '\\'));
