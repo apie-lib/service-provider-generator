@@ -122,6 +122,9 @@ final class ServiceProviderGenerator
         if (!empty($serviceDefinition['calls'])) {
             $code .= PHP_EOL . PHP_EOL . '        return $service;';
         }
+        if (!empty($serviceDefinition['deprecated'])) {
+            $code = '        @trigger_error(' . CodeUtils::renderString(str_replace('%service_id%', $serviceId, $serviceDefinition['deprecated'])) . ', E_USER_DEPRECATED);' . PHP_EOL . $code;
+        }
 
         $method = ($serviceDefinition['shared'] ?? false) ? 'bind' : 'singleton';
         return '$this->app->' . $method . '(' . PHP_EOL

@@ -1,0 +1,42 @@
+<?php
+namespace Example\OfSomeClass;
+
+use Apie\ServiceProviderGenerator\UseGeneratedMethods;
+use Illuminate\Support\ServiceProvider;
+
+class Test extends ServiceProvider
+{
+    use UseGeneratedMethods;
+
+    function register()
+    {
+        $this->app->singleton(
+            \App\MethodCallExample::class,
+            function ($app) {
+                @trigger_error('This service App\\MethodCallExample is deprecated', E_USER_DEPRECATED);
+                return new \App\MethodCallExample(
+                
+                );
+            }
+        );
+        $this->app->singleton(
+            \App\FactoryMethodCallExample::class,
+            function ($app) {
+                @trigger_error('This service App\\FactoryMethodCallExample is deprecated', E_USER_DEPRECATED);
+                $service =App\FactoryMethodCallExample::create(
+                
+                );
+                
+                $service->setFeature(
+                    '42'
+                );
+                $service->setLogger(
+                    $app->make('logger')
+                );
+        
+                return $service;
+            }
+        );
+        
+    }
+}

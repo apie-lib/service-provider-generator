@@ -58,7 +58,7 @@ your package, so are highly likely not to be implemented.
 | from_callable | No |
 | aliasing | Yes |
 | anonymous services | No |
-| method calls | No |
+| method calls | Yes |
 | !returns_clone | No |
 | expression language | No |
 | other imports | No |

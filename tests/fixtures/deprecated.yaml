@@ -1,0 +1,10 @@
+services:
+    App\MethodCallExample:
+        deprecated: 'This service %service_id% is deprecated'
+
+    App\FactoryMethodCallExample:
+        factory: [null, 'create']
+        deprecated: 'This service %service_id% is deprecated'
+        calls:
+            - setFeature: ['42']
+            - setLogger: ['@logger']
