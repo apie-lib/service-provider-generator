@@ -138,6 +138,8 @@ final class ServiceProviderGenerator
     public function createTagCode(TaggedValue $tag): string
     {
         switch ($tag->getTag()) {
+            case 'tagged':
+                return '$this->getTaggedServicesIterator(' . CodeUtils::renderString($tag->getValue()['tag']) . ')';
             case 'tagged_locator':
                 return '$this->getTaggedServicesServiceLocator(' . CodeUtils::renderString($tag->getValue()['tag']) . ')';
         }
