@@ -30,6 +30,26 @@ class Test extends ServiceProvider
             }
         );
         $this->app->singleton(
+            \App\StringExample::class,
+            function ($app) {
+                return call_user_func(
+                    'app'
+                
+                );
+                
+            }
+        );
+        $this->app->singleton(
+            \App\AnotherStringExample::class,
+            function ($app) {
+                return call_user_func(
+                    'createFromContainer',
+                    $app
+                );
+                
+            }
+        );
+        $this->app->singleton(
             \App\FromServiceFactory::class,
             function ($app) {
                 return StaticExampleFactory::publish(

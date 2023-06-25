@@ -74,6 +74,14 @@ final class ServiceProviderGenerator
                 $code .= ');' . PHP_EOL;
                 $code = CodeUtils::indent($code, 8);
                 break;
+            case 'string':
+                $codeArguments = $serviceDefinition['arguments'] ?? [];
+                $code .= 'call_user_func(' . PHP_EOL;
+                $code .= '    ' . CodeUtils::renderString($factory) . (empty($codeArguments) ? '' : ',') . PHP_EOL;
+                $code .= $this->createCodeForArgumentList($codeArguments, 4);
+                $code .= ');' . PHP_EOL;
+                $code = CodeUtils::indent($code, 8);
+                break;
             case 'null':
                 $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4);
                 $code = CodeUtils::indent(

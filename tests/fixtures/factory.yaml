@@ -7,5 +7,12 @@ services:
   App\NullExample:
     factory: [null, 'create']
 
+  App\StringExample:
+    factory: 'app'
+
+  App\AnotherStringExample:
+    factory: 'createFromContainer'
+    arguments: ['@service_container']
+
   App\FromServiceFactory:
     factory: ['StaticExampleFactory', 'publish']
