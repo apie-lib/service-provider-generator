@@ -4,6 +4,11 @@ namespace Example\OfSomeClass;
 use Apie\ServiceProviderGenerator\UseGeneratedMethods;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * This file is generated with apie/service-provider-generator from file: factory.yaml
+ * @codecoverageIgnore
+ * @phpstan-ignore
+ */
 class Test extends ServiceProvider
 {
     use UseGeneratedMethods;
@@ -14,7 +19,7 @@ class Test extends ServiceProvider
             \App\FactoryExample::class,
             function ($app) {
                 return $this->app->make(\App\FactoryExampleFactory::class)->create(
-                        '42',
+                        42,
                         $app
                 );
                 
@@ -23,7 +28,7 @@ class Test extends ServiceProvider
         $this->app->singleton(
             \App\NullExample::class,
             function ($app) {
-                return App\NullExample::create(
+                return \App\NullExample::create(
                 
                 );
                 
@@ -52,7 +57,7 @@ class Test extends ServiceProvider
         $this->app->singleton(
             \App\FromServiceFactory::class,
             function ($app) {
-                return StaticExampleFactory::publish(
+                return \StaticExampleFactory::publish(
                 
                 );
                 

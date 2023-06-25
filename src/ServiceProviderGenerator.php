@@ -28,6 +28,11 @@ final class ServiceProviderGenerator
         $sourceCode .= 'use Apie\ServiceProviderGenerator\UseGeneratedMethods;' . PHP_EOL;
         $sourceCode .= 'use Illuminate\Support\ServiceProvider;' . PHP_EOL;
         $sourceCode .= PHP_EOL;
+        $sourceCode .= '/**' . PHP_EOL;
+        $sourceCode .= ' * This file is generated with apie/service-provider-generator from file: ' . basename($yamlInputFile) . PHP_EOL;
+        $sourceCode .= ' * @codecoverageIgnore' . PHP_EOL;
+        $sourceCode .= ' * @phpstan-ignore' . PHP_EOL;
+        $sourceCode .= ' */' . PHP_EOL;
         $sourceCode .= 'class ' . $classWithoutNs . ' extends ServiceProvider' . PHP_EOL . '{' . PHP_EOL;
         $sourceCode .= '    use UseGeneratedMethods;' . PHP_EOL . PHP_EOL;
         $sourceCode .= '    function register()' . PHP_EOL;
@@ -59,15 +64,15 @@ final class ServiceProviderGenerator
         }
         $factory = $serviceDefinition['factory'] ?? null;
         $className = $serviceDefinition['class'] ?? $serviceId;
-        $code = empty($serviceDefinition['calls']) ? 'return ' : '$service =';
+        $code = empty($serviceDefinition['calls']) ? 'return ' : '$service = ';
         switch (get_debug_type($factory)) {
             case 'array':
                 if (null === $factory[0]) {
-                    $code .= $className . '::';
+                    $code .= '\\' . $className . '::';
                 } else if(str_starts_with($factory[0], '@')) {
                     $code .= '$this->app->make(' . CodeUtils::renderString(substr($factory[0], 1)) . ')->';
                 } else {
-                    $code .= $factory[0] . '::';
+                    $code .= '\\' . $factory[0] . '::';
                 }
                 $code .= $factory[1] . '(' . PHP_EOL;
                 $code .= $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 8);
@@ -170,7 +175,7 @@ final class ServiceProviderGenerator
         }
         if (!is_string($argument)) {
             // TODO parse arrays recursively, fix indenting multiline
-            return CodeUtils::renderString($argument);
+            return var_export($argument, true);
         }
         if ($argument === '@service_container') {
             return '$app';
