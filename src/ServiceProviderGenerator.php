@@ -35,7 +35,7 @@ final class ServiceProviderGenerator
         $sourceCode .= ' */' . PHP_EOL;
         $sourceCode .= 'class ' . $classWithoutNs . ' extends ServiceProvider' . PHP_EOL . '{' . PHP_EOL;
         $sourceCode .= '    use UseGeneratedMethods;' . PHP_EOL . PHP_EOL;
-        $sourceCode .= '    function register()' . PHP_EOL;
+        $sourceCode .= '    public function register()' . PHP_EOL;
         $sourceCode .= '    {' . PHP_EOL;
         $sourceCode .= CodeUtils::indent($registerMethodBody, 8) . PHP_EOL;
         $sourceCode .= '    }' . PHP_EOL;
@@ -75,7 +75,7 @@ final class ServiceProviderGenerator
                     $code .= '\\' . $factory[0] . '::';
                 }
                 $code .= $factory[1] . '(' . PHP_EOL;
-                $code .= $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 8);
+                $code .= $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4);
                 $code .= ');' . PHP_EOL;
                 $code = CodeUtils::indent($code, 8);
                 break;
