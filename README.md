@@ -64,7 +64,7 @@ your package, so are highly likely not to be implemented.
 | other imports | No |
 | Factory Service | Yes |
 | Static Factory | Yes |
-| Invokable Factory | No |
+| Invokable Factory | Yes |
 | Property injection | No |
 | Lazy services | No |
 | Optional arguments | Mapped as app()->bound() |

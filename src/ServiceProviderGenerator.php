@@ -156,6 +156,7 @@ final class ServiceProviderGenerator
     {
         switch ($tag->getTag()) {
             case 'tagged':
+            case 'tagged_iterator':
                 return '$this->getTaggedServicesIterator(' . CodeUtils::renderString($this->toTag($tag)) . ')';
             case 'tagged_locator':
                 return '$this->getTaggedServicesServiceLocator(' . CodeUtils::renderString($this->toTag($tag)) . ')';
