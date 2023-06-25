@@ -13,7 +13,7 @@ class Test extends ServiceProvider
 {
     use UseGeneratedMethods;
 
-    function register()
+    public function register()
     {
         $this->app->singleton(
             'apie.bounded_context.hashmap_factory',

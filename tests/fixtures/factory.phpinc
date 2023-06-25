@@ -13,14 +13,14 @@ class Test extends ServiceProvider
 {
     use UseGeneratedMethods;
 
-    function register()
+    public function register()
     {
         $this->app->singleton(
             \App\FactoryExample::class,
             function ($app) {
                 return $this->app->make(\App\FactoryExampleFactory::class)->create(
-                        42,
-                        $app
+                    42,
+                    $app
                 );
                 
             }
