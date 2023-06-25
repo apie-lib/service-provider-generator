@@ -135,13 +135,22 @@ final class ServiceProviderGenerator
             . ');' . $tagCode;
     }
 
+    private function toTag(TaggedValue $tag): string
+    {
+        $value = $tag->getValue();
+        if (is_string($value)) {
+            return $value;
+        }
+        return $value['tag'] ?? '';
+    }
+
     public function createTagCode(TaggedValue $tag): string
     {
         switch ($tag->getTag()) {
             case 'tagged':
-                return '$this->getTaggedServicesIterator(' . CodeUtils::renderString($tag->getValue()['tag']) . ')';
+                return '$this->getTaggedServicesIterator(' . CodeUtils::renderString($this->toTag($tag)) . ')';
             case 'tagged_locator':
-                return '$this->getTaggedServicesServiceLocator(' . CodeUtils::renderString($tag->getValue()['tag']) . ')';
+                return '$this->getTaggedServicesServiceLocator(' . CodeUtils::renderString($this->toTag($tag)) . ')';
         }
         throw new LogicException('Unknown tag: ' . $tag->getTag());
     }
