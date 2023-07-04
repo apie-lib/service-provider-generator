@@ -60,7 +60,7 @@ final class ServiceProviderGenerator
     public function generateServiceDefinition(array $serviceDefinition, string $serviceId)
     {
         if ($serviceDefinition['alias'] ?? null) {
-            return $this->generateAlias($serviceDefinition['alias'], $serviceId) . PHP_EOL;
+            return $this->generateAlias($serviceId, $serviceDefinition['alias']) . PHP_EOL;
         }
         $factory = $serviceDefinition['factory'] ?? null;
         $className = $serviceDefinition['class'] ?? $serviceId;
