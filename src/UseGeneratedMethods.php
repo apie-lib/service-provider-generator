@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  */
 trait UseGeneratedMethods
 {
-    protected function parseArgument(string $argument): string {
+    protected function parseArgument(string $argument): mixed {
         return preg_replace_callback('/%([^%]+)?%/', function (array $match) {
             if (empty($match[1])) {
                 return '%';
