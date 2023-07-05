@@ -33,13 +33,14 @@ class Test extends ServiceProvider
                     $this->parseArgument('%apie.rest_api.base_url%')
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\Routing\ApieRouteLoader::class,
             array (
               0 => 'routing.loader',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\Routing\ApieRouteLoader::class], 'routing.loader');
         $this->app->singleton(
             \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class,
@@ -48,13 +49,14 @@ class Test extends ServiceProvider
                     $this->getTaggedServicesServiceLocator('apie.context')
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class,
             array (
               0 => 'apie.core.context_builder',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class], 'apie.core.context_builder');
         $this->app->singleton(
             \Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class,
@@ -63,13 +65,14 @@ class Test extends ServiceProvider
                     $app->make('request_stack')
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class,
             array (
               0 => 'apie.core.context_builder',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class], 'apie.core.context_builder');
         $this->app->singleton(
             \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class,
@@ -78,13 +81,14 @@ class Test extends ServiceProvider
                     $app->bound(\Symfony\Component\Security\Csrf\CsrfTokenManagerInterface::class) ? $app->make(\Symfony\Component\Security\Csrf\CsrfTokenManagerInterface::class) : null
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class,
             array (
               0 => 'apie.core.context_builder',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class], 'apie.core.context_builder');
         $this->app->singleton(
             \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class,
@@ -93,13 +97,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\ApieBundle\Wrappers\BoundedContextSelected::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class,
             array (
               0 => 'apie.datalayer',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class], 'apie.datalayer');
         $this->app->singleton(
             \Apie\ApieBundle\Wrappers\BoundedContextSelected::class,
@@ -109,13 +114,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\Core\BoundedContext\BoundedContextHashmap::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\Wrappers\BoundedContextSelected::class,
             array (
               0 => 'apie.context',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\Wrappers\BoundedContextSelected::class], 'apie.context');
         $this->app->singleton(
             \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
@@ -128,13 +134,14 @@ class Test extends ServiceProvider
                     $this->parseArgument('%apie.cms.error_template%')
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
             array (
               0 => 'kernel.event_subscriber',
             )
-        };
+        );
         $this->app->tag([\Apie\ApieBundle\EventListeners\RenderErrorListener::class], 'kernel.event_subscriber');
         $this->app->singleton(
             \Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class,
@@ -143,7 +150,8 @@ class Test extends ServiceProvider
                 
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class,
             array (
@@ -152,7 +160,7 @@ class Test extends ServiceProvider
                 'name' => 'apie.core.route_definition',
               ),
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class], 'apie.core.route_definition');
         $this->app->singleton(
             \Apie\Cms\Controllers\DashboardController::class,
@@ -164,13 +172,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\ApieBundle\Wrappers\DashboardContents::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\DashboardController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\DashboardController::class], 'controller.service_arguments');
         $this->app->bind('apie.cms.dashboard_content', \Apie\Cms\EmptyDashboard::class);
         
@@ -192,13 +201,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\GetResourceListController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\GetResourceListController::class], 'controller.service_arguments');
         $this->app->singleton(
             \Apie\Cms\Controllers\RunGlobalMethodFormController::class,
@@ -210,13 +220,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\RunGlobalMethodFormController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\RunGlobalMethodFormController::class], 'controller.service_arguments');
         $this->app->singleton(
             \Apie\Cms\Controllers\CreateResourceFormController::class,
@@ -228,13 +239,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\CreateResourceFormController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\CreateResourceFormController::class], 'controller.service_arguments');
         $this->app->singleton(
             \Apie\Cms\Controllers\ModifyResourceFormController::class,
@@ -246,13 +258,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\ModifyResourceFormController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\ModifyResourceFormController::class], 'controller.service_arguments');
         $this->app->singleton(
             \Apie\Cms\Controllers\FormCommitController::class,
@@ -264,13 +277,14 @@ class Test extends ServiceProvider
                     $app->make(\Apie\Core\BoundedContext\BoundedContextHashmap::class)
                 );
             }
-        );\Apie\ServiceProviderGenerator\TagMap::register(
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
             $this->app,
             \Apie\Cms\Controllers\FormCommitController::class,
             array (
               0 => 'controller.service_arguments',
             )
-        };
+        );
         $this->app->tag([\Apie\Cms\Controllers\FormCommitController::class], 'controller.service_arguments');
         $this->app->singleton(
             'cms.layout.graphite_design_system',

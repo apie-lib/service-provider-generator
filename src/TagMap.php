@@ -2,6 +2,7 @@
 namespace Apie\ServiceProviderGenerator;
 
 use Illuminate\Contracts\Console\Application;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
 
 final class TagMap
@@ -15,19 +16,19 @@ final class TagMap
     {
     }
 
-    public static function unregister(Application $application)
+    public static function unregister(Application&ContainerInterface $application)
     {
         $hash = spl_object_hash($application);
         unset(self::$mapping[$hash]);
     }
 
-    public static function register(Application $application, string $serviceId, array $tags)
+    public static function register(Application&ContainerInterface $application, string $serviceId, array $tags)
     {
         $hash = spl_object_hash($application);
         self::$mapping[$hash][$serviceId] = $tags;
     }
 
-    public static function createServiceLocator(Application $application, string $tagName): ServiceLocator
+    public static function createServiceLocator(Application&ContainerInterface $application, string $tagName): ServiceLocator
     {
         $hash = spl_object_hash($application);
         $serviceTypes = [];
@@ -40,6 +41,6 @@ final class TagMap
         }
         return new ServiceLocator(function (string $serviceId) use ($application) {
             return $application->get($serviceId);
-        }, [], $serviceTypes)
+        }, [], $serviceTypes);
     }
 }
