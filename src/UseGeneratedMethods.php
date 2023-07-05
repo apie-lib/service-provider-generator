@@ -3,7 +3,7 @@ namespace Apie\ServiceProviderGenerator;
 
 use Illuminate\Support\Env;
 use Illuminate\Contracts\Container\Container;
-use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
 
 /**
  * @property-read Container $app
@@ -11,6 +11,10 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 trait UseGeneratedMethods
 {
     protected function parseArgument(string $argument): mixed {
+        if (preg_match('/^%[^%]+%$/', $argument)) {
+            $configKey = substr(substr($argument, 1), 0, -1);
+            return $this->app->make('config')->get($configKey);
+        }
         return preg_replace_callback('/%([^%]+)?%/', function (array $match) {
             if (empty($match[1])) {
                 return '%';
@@ -26,8 +30,7 @@ trait UseGeneratedMethods
     }
 
     protected function getTaggedServicesServiceLocator(string $tag): ServiceLocator {
-        $factories = [];
-        return new ServiceLocator($factories);
+        return TagMap::createServiceLocator($app, $tag);
     }
 
     protected function getTaggedServicesIterator(string $tag): array {

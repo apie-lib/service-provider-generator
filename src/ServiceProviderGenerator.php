@@ -111,6 +111,11 @@ final class ServiceProviderGenerator
         
         $tagCode = '';
         if ($serviceDefinition['tags'] ?? null) {
+            $tagCode .= '\\' . TagMap::class . '::register(' . PHP_EOL;
+            $tagCode .= '    $this->app,' . PHP_EOL;
+            $tagCode .= '    ' . CodeUtils::renderString($serviceId) . ',' . PHP_EOL;
+            $tagCode .= CodeUtils::indent(var_export($serviceDefinition['tags'], true), 4) . PHP_EOL;
+            $tagCode .= '};';
             foreach ($serviceDefinition['tags'] as $tag) {
                 if (is_string($tag)) {
                     $tagCode .= PHP_EOL
