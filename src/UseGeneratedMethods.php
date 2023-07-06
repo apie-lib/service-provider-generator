@@ -30,7 +30,7 @@ trait UseGeneratedMethods
     }
 
     protected function getTaggedServicesServiceLocator(string $tag): ServiceLocator {
-        return TagMap::createServiceLocator($app, $tag);
+        return TagMap::createServiceLocator($this->app, $tag);
     }
 
     protected function getTaggedServicesIterator(string $tag): array {
