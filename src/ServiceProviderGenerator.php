@@ -31,7 +31,6 @@ final class ServiceProviderGenerator
         $sourceCode .= '/**' . PHP_EOL;
         $sourceCode .= ' * This file is generated with apie/service-provider-generator from file: ' . basename($yamlInputFile) . PHP_EOL;
         $sourceCode .= ' * @codecoverageIgnore' . PHP_EOL;
-        $sourceCode .= ' * @phpstan-ignore' . PHP_EOL;
         $sourceCode .= ' */' . PHP_EOL;
         $sourceCode .= 'class ' . $classWithoutNs . ' extends ServiceProvider' . PHP_EOL . '{' . PHP_EOL;
         $sourceCode .= '    use UseGeneratedMethods;' . PHP_EOL . PHP_EOL;
