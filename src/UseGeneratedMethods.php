@@ -33,9 +33,9 @@ trait UseGeneratedMethods
         }, $argument);
     }
 
-    protected function getKernelParam(string $kernelParam) {
+    protected function getKernelParam(string $kernelParam): mixed {
         return match ($kernelParam) {
-            'kernel.debug' => filter_var($this->app->make('config')->get('app.debug')),
+            'kernel.debug' => filter_var($this->app->make('config')->get('app.debug'), FILTER_VALIDATE_BOOL),
             default => throw new UnexpectedValueException('Unexpected value : "' . $kernelParam . '"')
         };
     }
