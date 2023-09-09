@@ -4,6 +4,7 @@ namespace Apie\ServiceProviderGenerator;
 use Illuminate\Support\Env;
 use Illuminate\Contracts\Container\Container;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
+use UnexpectedValueException;
 
 /**
  * @property-read Container $app
@@ -25,8 +26,18 @@ trait UseGeneratedMethods
                     $this->app->make('config')->get($match[1])
                 );
             }
+            if (str_starts_with($match[1], 'kernel.')) {
+                return $this->getKernelParam($match[1]);
+            }
             return $this->app->make('config')->get($match[1]);
         }, $argument);
+    }
+
+    protected function getKernelParam(string $kernelParam) {
+        return match ($kernelParam) {
+            'kernel.debug' => filter_var($this->app->make('config')->get('app.debug')),
+            default => throw new UnexpectedValueException('Unexpected value : "' . $kernelParam . '"')
+        };
     }
 
     protected function getTaggedServicesServiceLocator(string $tag): ServiceLocator {
