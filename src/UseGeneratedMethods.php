@@ -11,13 +11,17 @@ use UnexpectedValueException;
  */
 trait UseGeneratedMethods
 {
+    private function getConfigKey(string $input): mixed
+    {
+        if (str_starts_with($input, 'kernel.')) {
+            return $this->getKernelParam($input);
+        }
+        return $this->app->make('config')->get($input);
+    }
+
     protected function parseArgument(string $argument): mixed {
         if (preg_match('/^%[^%]+%$/', $argument)) {
-            $configKey = substr(substr($argument, 1), 0, -1);
-            if (str_starts_with($configKey, 'kernel.')) {
-                return $this->getKernelParam($configKey[1]);
-            }
-            return $this->app->make('config')->get($configKey);
+            return $this->getConfigKey(substr(substr($argument, 1), 0, -1));
         }
         return preg_replace_callback('/%([^%]+)?%/', function (array $match) {
             if (empty($match[1])) {
@@ -26,13 +30,10 @@ trait UseGeneratedMethods
             if (preg_match('/env\(([^\)])\)/', $match[1], $matches)) {
                 return Env::get(
                     $this->parseArgument('%' . $matches[1] . '%'),
-                    $this->app->make('config')->get($match[1])
+                    $this->getConfigKey($match[1])
                 );
             }
-            if (str_starts_with($match[1], 'kernel.')) {
-                return $this->getKernelParam($match[1]);
-            }
-            return $this->app->make('config')->get($match[1]);
+            return $this->getConfigKey($match[1]);
         }, $argument);
     }
 
@@ -40,7 +41,7 @@ trait UseGeneratedMethods
         return match ($kernelParam) {
             'kernel.cache_dir' => storage_path('cache'),
             'kernel.debug' => (bool) ($this->app->make('config')->get('app.debug')),
-            default => throw new UnexpectedValueException('Unexpected value : "' . $kernelParam . '"')
+            default => throw new UnexpectedValueException('Unexpected value: "' . $kernelParam . '"')
         };
     }
 
