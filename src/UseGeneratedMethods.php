@@ -14,6 +14,9 @@ trait UseGeneratedMethods
     protected function parseArgument(string $argument): mixed {
         if (preg_match('/^%[^%]+%$/', $argument)) {
             $configKey = substr(substr($argument, 1), 0, -1);
+            if (str_starts_with($configKey, 'kernel.')) {
+                return $this->getKernelParam($configKey[1]);
+            }
             return $this->app->make('config')->get($configKey);
         }
         return preg_replace_callback('/%([^%]+)?%/', function (array $match) {
@@ -35,7 +38,8 @@ trait UseGeneratedMethods
 
     protected function getKernelParam(string $kernelParam): mixed {
         return match ($kernelParam) {
-            'kernel.debug' => filter_var($this->app->make('config')->get('app.debug'), FILTER_VALIDATE_BOOL),
+            'kernel.cache_dir' => storage_path('cache'),
+            'kernel.debug' => (bool) ($this->app->make('config')->get('app.debug')),
             default => throw new UnexpectedValueException('Unexpected value : "' . $kernelParam . '"')
         };
     }
