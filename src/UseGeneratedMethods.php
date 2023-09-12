@@ -50,6 +50,8 @@ trait UseGeneratedMethods
     }
 
     protected function getTaggedServicesIterator(string $tag): array {
-        return iterator_to_array($this->app->tagged($tag));
+        $list = $this->app->tagged($tag);
+
+        return is_array($list) ? $list : iterator_to_array($list);
     }
 }
