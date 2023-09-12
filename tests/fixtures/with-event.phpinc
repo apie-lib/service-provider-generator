@@ -1,0 +1,38 @@
+<?php
+namespace Example\OfSomeClass;
+
+use Apie\ServiceProviderGenerator\UseGeneratedMethods;
+use Illuminate\Support\ServiceProvider;
+
+/**
+ * This file is generated with apie/service-provider-generator from file: with-event.yaml
+ * @codecoverageIgnore
+ */
+class Test extends ServiceProvider
+{
+    use UseGeneratedMethods;
+
+    public function register()
+    {
+        $this->app->singleton(
+            'App\\\\TestClass\\Subscriber',
+            function ($app) {
+                return new \App\\TestClass\Subscriber(
+                
+                );
+            }
+        );
+        \Apie\ServiceProviderGenerator\TagMap::register(
+            $this->app,
+            'App\\\\TestClass\\Subscriber',
+            array (
+              0 => 
+              array (
+                'name' => 'kernel.event_subscriber',
+              ),
+            )
+        );
+        $this->app->tag(['App\\\\TestClass\\Subscriber'], 'kernel.event_subscriber');
+        
+    }
+}

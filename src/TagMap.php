@@ -1,7 +1,9 @@
 <?php
 namespace Apie\ServiceProviderGenerator;
 
+use Apie\ServiceProviderGenerator\Events\SymfonyEventSubscriberAdapter;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Facades\Event;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
 
 final class TagMap
@@ -35,6 +37,9 @@ final class TagMap
             foreach ($tags as $tag) {
                 if ($tag === $tagName || ($tag['name'] ?? null === $tagName)) {
                     $serviceMap[$serviceId] = [$serviceId, $application];
+                    if ($tagName === 'kernel.event_subscriber') {
+                        $application->get('events')->subscribe(new SymfonyEventSubscriberAdapter(new $serviceId()));
+                    }
                 }
             }
         }
