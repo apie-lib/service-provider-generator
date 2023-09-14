@@ -27,6 +27,12 @@ final class TagMap
     {
         $hash = spl_object_hash($application);
         self::$mapping[$hash][$serviceId] = $tags;
+        foreach ($tags as $tag) {
+            $tagName = is_array($tag) ? $tag['name'] ?? null : $tag;
+            if ($tagName === 'kernel.event_subscriber') {
+                $application->get('events')->subscribe(new SymfonyEventSubscriberAdapter($application, $serviceId));
+            } 
+        }
     }
 
     public static function createServiceLocator(Container $application, string $tagName): ServiceLocator
@@ -37,9 +43,6 @@ final class TagMap
             foreach ($tags as $tag) {
                 if ($tag === $tagName || ($tag['name'] ?? null === $tagName)) {
                     $serviceMap[$serviceId] = [$serviceId, $application];
-                    if ($tagName === 'kernel.event_subscriber') {
-                        $application->get('events')->subscribe(new SymfonyEventSubscriberAdapter(new $serviceId()));
-                    }
                 }
             }
         }
