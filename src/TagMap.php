@@ -3,6 +3,7 @@ namespace Apie\ServiceProviderGenerator;
 
 use Apie\ServiceProviderGenerator\Events\SymfonyEventSubscriberAdapter;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Event;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
 
@@ -23,16 +24,28 @@ final class TagMap
         unset(self::$mapping[$hash]);
     }
 
+    /**
+     * Needs to be called in Laravel in the boot() method to avoid out of order of execution issues
+     * with integration tests.
+     */
+    public static function registerEvents(Container $application): void
+    {
+        $hash = spl_object_hash($application);
+        foreach (self::$mapping[$hash] ?? [] as $serviceId => $tagData) {
+            $tagName = is_array($tagData) ? $tagData['name'] ?? null : $tagData;
+            if ($tagName === 'kernel.event_subscriber') {
+                $application->extend('events', function (Dispatcher $dispatcher, $app) use ($serviceId) {
+                    $dispatcher->subscribe(new SymfonyEventSubscriberAdapter($app, $serviceId));
+                    return $dispatcher;
+                });
+            } 
+        }
+    }
+
     public static function register(Container $application, string $serviceId, array $tags)
     {
         $hash = spl_object_hash($application);
         self::$mapping[$hash][$serviceId] = $tags;
-        foreach ($tags as $tag) {
-            $tagName = is_array($tag) ? $tag['name'] ?? null : $tag;
-            if ($tagName === 'kernel.event_subscriber') {
-                $application->get('events')->subscribe(new SymfonyEventSubscriberAdapter($application, $serviceId));
-            } 
-        }
     }
 
     public static function createServiceLocator(Container $application, string $tagName): ServiceLocator
