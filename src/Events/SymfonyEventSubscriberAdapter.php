@@ -3,7 +3,6 @@ namespace Apie\ServiceProviderGenerator\Events;
 
 use Illuminate\Events\Dispatcher;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SymfonyEventSubscriberAdapter
 {
@@ -15,6 +14,11 @@ class SymfonyEventSubscriberAdapter
 
     public function subscribe(Dispatcher $events): array
     {
-        return $this->container->get($this->serviceId)->getSubscribedEvents();
+        $result = [];
+        $service = $this->container->get($this->serviceId);
+        foreach ($service->getSubscribedEvents() as $event => $eventClosures) {
+            $result[$event] = new SymfonyEventListenerAdapter($service, $eventClosures);
+        }
+        return $result;
     }
 }

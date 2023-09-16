@@ -32,13 +32,16 @@ final class TagMap
     {
         $hash = spl_object_hash($application);
         foreach (self::$mapping[$hash] ?? [] as $serviceId => $tagData) {
-            $tagName = is_array($tagData) ? $tagData['name'] ?? null : $tagData;
-            if ($tagName === 'kernel.event_subscriber') {
-                $application->extend('events', function (Dispatcher $dispatcher, $app) use ($serviceId) {
-                    $dispatcher->subscribe(new SymfonyEventSubscriberAdapter($app, $serviceId));
-                    return $dispatcher;
-                });
-            } 
+            foreach ($tagData as $tag) {
+                $tagName = is_array($tag) ? $tag['name'] ?? null : $tag;
+            
+                if ($tagName === 'kernel.event_subscriber') {
+                    $application->extend('events', function (Dispatcher $dispatcher, $app) use ($serviceId) {
+                        $dispatcher->subscribe(new SymfonyEventSubscriberAdapter($app, $serviceId));
+                        return $dispatcher;
+                    });
+                } 
+            }
         }
     }
 
