@@ -51,6 +51,15 @@ final class TagMap
         self::$mapping[$hash][$serviceId] = $tags;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function getServiceIdsWithTag(Container $application, string $tagName): array
+    {
+        $hash = spl_object_hash($application);
+        return array_keys(self::$mapping[$hash][$tagName] ?? []);
+    }
+
     public static function createServiceLocator(Container $application, string $tagName): ServiceLocator
     {
         $hash = spl_object_hash($application);
