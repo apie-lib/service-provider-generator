@@ -4,7 +4,6 @@ namespace Apie\ServiceProviderGenerator;
 use Apie\ServiceProviderGenerator\Events\SymfonyEventSubscriberAdapter;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Facades\Event;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
 
 final class TagMap
@@ -57,7 +56,15 @@ final class TagMap
     public static function getServiceIdsWithTag(Container $application, string $tagName): array
     {
         $hash = spl_object_hash($application);
-        return array_keys(self::$mapping[$hash][$tagName] ?? []);
+        $serviceIds = [];
+        foreach (self::$mapping[$hash] ?? [] as $serviceId => $tags) {
+            foreach ($tags as $tag) {
+                if ($tag === $tagName || (($tag['name'] ?? null) === $tagName)) {
+                    $serviceIds[] = $serviceId;
+                }
+            }
+        }
+        return $serviceIds;
     }
 
     public static function createServiceLocator(Container $application, string $tagName): ServiceLocator
@@ -66,7 +73,7 @@ final class TagMap
         $serviceMap = [];
         foreach (self::$mapping[$hash] ?? [] as $serviceId => $tags) {
             foreach ($tags as $tag) {
-                if ($tag === $tagName || ($tag['name'] ?? null === $tagName)) {
+                if ($tag === $tagName || (($tag['name'] ?? null) === $tagName)) {
                     $serviceMap[$serviceId] = [$serviceId, $application];
                 }
             }
