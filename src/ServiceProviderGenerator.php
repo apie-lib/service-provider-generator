@@ -42,16 +42,18 @@ final class ServiceProviderGenerator
         return $sourceCode;
     }
 
-    public function createCodeForArgumentList(array $argumentList, int $indentation = 0): string
+    public function createCodeForArgumentList(array $argumentList, int $indentation = 0, ?string $class = null): string
     {
         $indentString = str_repeat(' ', $indentation);
         $arguments = [];
+        $count = 0;
         foreach ($argumentList as $key => $argument) {
             $prefix = is_int($key) ? '' : ltrim($key, '$');
             if ($prefix) {
                 $prefix .= ': ';
             }
-            $arguments[] = $indentString . $prefix . $this->createCodeForArgument($argument);
+            $arguments[] = $indentString . $prefix . $this->createCodeForArgument($argument, $class, $count);
+            $count++;
         }
         return implode(',' . PHP_EOL, $arguments) . PHP_EOL;
     }
@@ -87,7 +89,7 @@ final class ServiceProviderGenerator
                 $code = CodeUtils::indent($code, 8);
                 break;
             case 'null':
-                $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4);
+                $argumentsCode = $this->createCodeForArgumentList($serviceDefinition['arguments'] ?? [], 4, $className);
                 $code = CodeUtils::indent(
                     $code . 'new \\' . $className . '(' . PHP_EOL
                         . $argumentsCode
@@ -173,7 +175,7 @@ final class ServiceProviderGenerator
         throw new LogicException('Unknown tag: ' . $tag->getTag());
     }
 
-    public function createCodeForArgument(mixed $argument): string {
+    public function createCodeForArgument(mixed $argument, ?string $class, ?int $argumentNumber): string {
         if ($argument instanceof TaggedValue) {
             return $this->createTagCode($argument);
         }
@@ -195,6 +197,13 @@ final class ServiceProviderGenerator
             $argument = substr($argument, 1);
         }
         if (str_contains($argument, '%')) {
+            if ($class !== null && $argumentNumber !== null) {
+                return '$this->parseArgument('
+                    . CodeUtils::renderString($argument)
+                    . ', ' . CodeUtils::renderString($class)
+                    . ', ' . $argumentNumber
+                    . ')';
+            }
             return '$this->parseArgument(' . CodeUtils::renderString($argument) . ')';
         }
         return CodeUtils::renderString($argument);

@@ -19,22 +19,50 @@ trait UseGeneratedMethods
         return $this->app->make('config')->get($input);
     }
 
-    protected function parseArgument(string $argument): mixed {
-        if (preg_match('/^%[^%]+%$/', $argument)) {
-            return $this->getConfigKey(substr(substr($argument, 1), 0, -1));
+    private function handleDefault(mixed $default, ?string $class, ?int $argumentNumber): mixed
+    {
+        if ($default !== null || $class === null || $argumentNumber === null) {
+            return $default;
         }
-        return preg_replace_callback('/%([^%]+)?%/', function (array $match) {
-            if (empty($match[1])) {
-                return '%';
+        
+        if (class_exists($class) && method_exists($class, '__construct')) {
+            $reflection = new \ReflectionClass($class);
+            $constructor = $reflection->getConstructor();
+            if ($constructor && $constructor->getNumberOfParameters() > $argumentNumber) {
+                $parameter = $constructor->getParameters()[$argumentNumber];
+                if ($parameter->isDefaultValueAvailable()) {
+                    return $parameter->getDefaultValue();
+                }
             }
-            if (preg_match('/env\(([^\)])\)/', $match[1], $matches)) {
-                return Env::get(
-                    $this->parseArgument('%' . $matches[1] . '%'),
-                    $this->getConfigKey($match[1])
-                );
-            }
-            return $this->getConfigKey($match[1]);
-        }, $argument);
+        }
+
+        return $default;
+    }
+
+    protected function parseArgument(string $argument, ?string $class, ?int $argumentNumber): mixed {
+        if (preg_match('/^%[^%]+%$/', $argument)) {
+            return $this->handleDefault(
+                $this->getConfigKey(substr(substr($argument, 1), 0, -1)),
+                $class,
+                $argumentNumber
+            );
+        }
+        return $this->handleDefault(
+            preg_replace_callback('/%([^%]+)?%/', function (array $match) {
+                if (empty($match[1])) {
+                    return '%';
+                }
+                if (preg_match('/env\(([^\)])\)/', $match[1], $matches)) {
+                    return Env::get(
+                        $this->parseArgument('%' . $matches[1] . '%'),
+                        $this->getConfigKey($match[1])
+                    );
+                }
+                return $this->getConfigKey($match[1]);
+            }, $argument),
+            $class,
+            $argumentNumber
+        );
     }
 
     protected function getKernelParam(string $kernelParam): mixed {

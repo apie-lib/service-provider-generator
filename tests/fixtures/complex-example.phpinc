@@ -18,7 +18,7 @@ class Test extends ServiceProvider
             'apie.bounded_context.hashmap_factory',
             function ($app) {
                 return new \Apie\ApieBundle\Wrappers\BoundedContextHashmapFactory(
-                    $this->parseArgument('%apie.bounded_contexts%')
+                    $this->parseArgument('%apie.bounded_contexts%', \Apie\ApieBundle\Wrappers\BoundedContextHashmapFactory::class, 0)
                 );
             }
         );
@@ -28,8 +28,8 @@ class Test extends ServiceProvider
                 return new \Apie\ApieBundle\Routing\ApieRouteLoader(
                     $app->make('apie.route_definitions.provider'),
                     $app->make('apie.bounded_context.hashmap'),
-                    $this->parseArgument('%apie.cms.base_url%'),
-                    $this->parseArgument('%apie.rest_api.base_url%')
+                    $this->parseArgument('%apie.cms.base_url%', \Apie\ApieBundle\Routing\ApieRouteLoader::class, 2),
+                    $this->parseArgument('%apie.rest_api.base_url%', \Apie\ApieBundle\Routing\ApieRouteLoader::class, 3)
                 );
             }
         );
@@ -129,8 +129,8 @@ class Test extends ServiceProvider
                     $app->bound(\Apie\HtmlBuilders\Factories\ComponentFactory::class) ? $app->make(\Apie\HtmlBuilders\Factories\ComponentFactory::class) : null,
                     $app->bound(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class) ? $app->make(\Apie\HtmlBuilders\Interfaces\ComponentRendererInterface::class) : null,
                     $app->bound(\Twig\Environment::class) ? $app->make(\Twig\Environment::class) : null,
-                    $this->parseArgument('%apie.cms.base_url%'),
-                    $this->parseArgument('%apie.cms.error_template%')
+                    $this->parseArgument('%apie.cms.base_url%', \Apie\ApieBundle\EventListeners\RenderErrorListener::class, 3),
+                    $this->parseArgument('%apie.cms.error_template%', \Apie\ApieBundle\EventListeners\RenderErrorListener::class, 4)
                 );
             }
         );
