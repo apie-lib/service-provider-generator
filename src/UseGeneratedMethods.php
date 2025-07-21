@@ -39,7 +39,7 @@ trait UseGeneratedMethods
         return $default;
     }
 
-    protected function parseArgument(string $argument, ?string $class, ?int $argumentNumber): mixed {
+    protected function parseArgument(string $argument, ?string $class = null, ?int $argumentNumber = null): mixed {
         if (preg_match('/^%[^%]+%$/', $argument)) {
             return $this->handleDefault(
                 $this->getConfigKey(substr(substr($argument, 1), 0, -1)),
