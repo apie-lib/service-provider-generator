@@ -23,7 +23,7 @@
     "minimum-stability": "dev",
     "require": {
         "symfony/yaml": "6.*|7.*",
-        "illuminate/support": "7.*|8.*|9.*|10.*|11.*",
+        "illuminate/support": "7.*|8.*|9.*|10.*|11.*|12.*",
         "symfony/dependency-injection": "6.*|7.*"
     },
     "require-dev": {
