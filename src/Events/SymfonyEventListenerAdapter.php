@@ -1,9 +1,6 @@
 <?php
 namespace Apie\ServiceProviderGenerator\Events;
 
-use Illuminate\Events\Dispatcher;
-use Psr\Container\ContainerInterface;
-
 class SymfonyEventListenerAdapter
 {
     public function __construct(

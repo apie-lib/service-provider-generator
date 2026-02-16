@@ -14,7 +14,7 @@ class Test extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(
+        $this->registerSingleton(
             \App\MethodCallExample::class,
             function ($app) {
                 @trigger_error('This service App\\MethodCallExample is deprecated', E_USER_DEPRECATED);
@@ -23,7 +23,7 @@ class Test extends ServiceProvider
                 );
             }
         );
-        $this->app->singleton(
+        $this->registerSingleton(
             \App\FactoryMethodCallExample::class,
             function ($app) {
                 @trigger_error('This service App\\FactoryMethodCallExample is deprecated', E_USER_DEPRECATED);

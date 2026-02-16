@@ -12,13 +12,11 @@ class SymfonyEventSubscriberAdapter
     ) {
     }
 
-    public function subscribe(Dispatcher $events): array
+    public function subscribe(Dispatcher $events): void
     {
-        $result = [];
         $service = $this->container->get($this->serviceId);
         foreach ($service->getSubscribedEvents() as $event => $eventClosures) {
-            $result[$event] = new SymfonyEventListenerAdapter($service, $eventClosures);
+            $events->listen($event, new SymfonyEventListenerAdapter($service, $eventClosures));
         }
-        return $result;
     }
 }

@@ -14,7 +14,7 @@ class Test extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(
+        $this->registerSingleton(
             'SharedExample',
             function ($app) {
                 return new \SharedExample(

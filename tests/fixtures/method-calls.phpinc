@@ -14,7 +14,7 @@ class Test extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(
+        $this->registerSingleton(
             \App\MethodCallExample::class,
             function ($app) {
                 $service = new \App\MethodCallExample(
@@ -30,7 +30,7 @@ class Test extends ServiceProvider
                 return $service;
             }
         );
-        $this->app->singleton(
+        $this->registerSingleton(
             \App\FactoryMethodCallExample::class,
             function ($app) {
                 $service = \App\FactoryMethodCallExample::create(

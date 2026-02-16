@@ -145,8 +145,8 @@ final class ServiceProviderGenerator
             $code = '        @trigger_error(' . CodeUtils::renderString(str_replace('%service_id%', $serviceId, $serviceDefinition['deprecated'])) . ', E_USER_DEPRECATED);' . PHP_EOL . $code;
         }
 
-        $method = ($serviceDefinition['shared'] ?? false) ? 'bind' : 'singleton';
-        return '$this->app->' . $method . '(' . PHP_EOL
+        $method = ($serviceDefinition['shared'] ?? false) ? '$this->app->bind' : '$this->registerSingleton';
+        return $method . '(' . PHP_EOL
             . '    ' . CodeUtils::renderString($serviceId) . ',' . PHP_EOL
             . '    function ($app) {' . PHP_EOL
             . $code . PHP_EOL

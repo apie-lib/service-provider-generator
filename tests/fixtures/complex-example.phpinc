@@ -14,7 +14,7 @@ class Test extends ServiceProvider
 
     public function register()
     {
-        $this->app->singleton(
+        $this->registerSingleton(
             'apie.bounded_context.hashmap_factory',
             function ($app) {
                 return new \Apie\ApieBundle\Wrappers\BoundedContextHashmapFactory(
@@ -22,7 +22,7 @@ class Test extends ServiceProvider
                 );
             }
         );
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\Routing\ApieRouteLoader::class,
             function ($app) {
                 return new \Apie\ApieBundle\Routing\ApieRouteLoader(
@@ -41,7 +41,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\Routing\ApieRouteLoader::class], 'routing.loader');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class,
             function ($app) {
                 return new \Apie\ApieBundle\ContextBuilders\ServiceContextBuilder(
@@ -57,7 +57,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\ServiceContextBuilder::class], 'apie.core.context_builder');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class,
             function ($app) {
                 return new \Apie\ApieBundle\ContextBuilders\SessionContextBuilder(
@@ -73,7 +73,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\SessionContextBuilder::class], 'apie.core.context_builder');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class,
             function ($app) {
                 return new \Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder(
@@ -89,7 +89,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\ContextBuilders\CsrfTokenContextBuilder::class], 'apie.core.context_builder');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class,
             function ($app) {
                 return new \Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer(
@@ -105,7 +105,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\Wrappers\RequestAwareInMemoryDatalayer::class], 'apie.datalayer');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\Wrappers\BoundedContextSelected::class,
             function ($app) {
                 return new \Apie\ApieBundle\Wrappers\BoundedContextSelected(
@@ -122,7 +122,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\Wrappers\BoundedContextSelected::class], 'apie.context');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
             function ($app) {
                 return new \Apie\ApieBundle\EventListeners\RenderErrorListener(
@@ -142,7 +142,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\EventListeners\RenderErrorListener::class], 'kernel.event_subscriber');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class,
             function ($app) {
                 return new \Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider(
@@ -161,7 +161,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class], 'apie.core.route_definition');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\DashboardController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\DashboardController(
@@ -182,7 +182,7 @@ class Test extends ServiceProvider
         $this->app->tag([\Apie\Cms\Controllers\DashboardController::class], 'controller.service_arguments');
         $this->app->bind('apie.cms.dashboard_content', \Apie\Cms\EmptyDashboard::class);
         
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\EmptyDashboard::class,
             function ($app) {
                 return new \Apie\Cms\EmptyDashboard(
@@ -190,7 +190,7 @@ class Test extends ServiceProvider
                 );
             }
         );
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\GetResourceListController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\GetResourceListController(
@@ -209,7 +209,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\Controllers\GetResourceListController::class], 'controller.service_arguments');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\RunGlobalMethodFormController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\RunGlobalMethodFormController(
@@ -228,7 +228,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\Controllers\RunGlobalMethodFormController::class], 'controller.service_arguments');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\CreateResourceFormController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\CreateResourceFormController(
@@ -247,7 +247,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\Controllers\CreateResourceFormController::class], 'controller.service_arguments');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\ModifyResourceFormController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\ModifyResourceFormController(
@@ -266,7 +266,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\Controllers\ModifyResourceFormController::class], 'controller.service_arguments');
-        $this->app->singleton(
+        $this->registerSingleton(
             \Apie\Cms\Controllers\FormCommitController::class,
             function ($app) {
                 return new \Apie\Cms\Controllers\FormCommitController(
@@ -285,7 +285,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\Cms\Controllers\FormCommitController::class], 'controller.service_arguments');
-        $this->app->singleton(
+        $this->registerSingleton(
             'cms.layout.graphite_design_system',
             function ($app) {
                 return \Apie\CmsLayoutGraphite\GraphiteDesignSystemLayout::createRenderer(

@@ -5,10 +5,13 @@ use Apie\ServiceProviderGenerator\Events\SymfonyEventSubscriberAdapter;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Symfony\Component\DependencyInjection\Argument\ServiceLocator;
+use WeakMap;
 
 final class TagMap
 {
     private static array $mapping = [];
+
+    private static WeakMap $finalized = new WeakMap();
 
     /**
      * @codeCoverageIgnore
@@ -21,6 +24,16 @@ final class TagMap
     {
         $hash = spl_object_hash($application);
         unset(self::$mapping[$hash]);
+    }
+
+    public static function markBooted(Container $application)
+    {
+        self::$finalized[$application] = true;
+    }
+
+    public static function isBooted(Container $application)
+    {
+        return self::$finalized[$application] ?? false;
     }
 
     /**

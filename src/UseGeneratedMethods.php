@@ -39,6 +39,17 @@ trait UseGeneratedMethods
         return $default;
     }
 
+    protected function registerSingleton(string $serviceId, callable $factoryMethod): void
+    {
+        $this->app->bind($serviceId, function () use ($serviceId, $factoryMethod) {
+            $result = $factoryMethod();
+            if (TagMap::isBooted($this->app)) {
+                $this->app->instance($serviceId, $result);
+            }
+            return $result;
+        });
+    }
+
     protected function parseArgument(string $argument, ?string $class = null, ?int $argumentNumber = null): mixed {
         if (preg_match('/^%[^%]+%$/', $argument)) {
             return $this->handleDefault(

@@ -2,15 +2,15 @@
 namespace Apie\Tests\ServiceProviderGenerator;
 
 use Apie\ServiceProviderGenerator\ServiceProviderGenerator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 
 class ServiceProviderGeneratorTest extends TestCase
 {
-    /**
-     * @dataProvider generatedCodeProvider
-     * @test
-     */
+    #[Test]
+    #[DataProvider('generatedCodeProvider')]
     public function it_generates_code(string $expectedOutputFile, string $inputFile)
     {
         $testItem = new ServiceProviderGenerator();
