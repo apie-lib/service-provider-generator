@@ -41,8 +41,8 @@ trait UseGeneratedMethods
 
     protected function registerSingleton(string $serviceId, callable $factoryMethod): void
     {
-        $this->app->bind($serviceId, function () use ($serviceId, $factoryMethod) {
-            $result = $factoryMethod();
+        $this->app->bind($serviceId, function ($app) use ($serviceId, $factoryMethod) {
+            $result = $factoryMethod($app);
             if (TagMap::isBooted($this->app)) {
                 $this->app->instance($serviceId, $result);
             }
