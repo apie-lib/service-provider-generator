@@ -11,7 +11,7 @@ final class TagMap
 {
     private static array $mapping = [];
 
-    private static WeakMap $finalized = new WeakMap();
+    private static WeakMap $finalized;
 
     /**
      * @codeCoverageIgnore
@@ -28,11 +28,13 @@ final class TagMap
 
     public static function markBooted(Container $application)
     {
+        self::$finalized??= new WeakMap();
         self::$finalized[$application] = true;
     }
 
     public static function isBooted(Container $application)
     {
+        self::$finalized??= new WeakMap();
         return self::$finalized[$application] ?? false;
     }
 
