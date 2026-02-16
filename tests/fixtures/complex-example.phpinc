@@ -122,7 +122,7 @@ class Test extends ServiceProvider
             )
         );
         $this->app->tag([\Apie\ApieBundle\Wrappers\BoundedContextSelected::class], 'apie.context');
-        $this->registerSingleton(
+        $this->app->singleton(
             \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
             function ($app) {
                 return new \Apie\ApieBundle\EventListeners\RenderErrorListener(
@@ -139,9 +139,11 @@ class Test extends ServiceProvider
             \Apie\ApieBundle\EventListeners\RenderErrorListener::class,
             array (
               0 => 'kernel.event_subscriber',
+              1 => 'always-singleton',
             )
         );
         $this->app->tag([\Apie\ApieBundle\EventListeners\RenderErrorListener::class], 'kernel.event_subscriber');
+        $this->app->tag([\Apie\ApieBundle\EventListeners\RenderErrorListener::class], 'always-singleton');
         $this->registerSingleton(
             \Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider::class,
             function ($app) {

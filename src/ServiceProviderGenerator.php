@@ -110,6 +110,7 @@ final class ServiceProviderGenerator
             $code .= PHP_EOL . CodeUtils::indent($methodCallCode, 8);         
         }
         
+        $tags = [];
         $tagCode = '';
         if ($serviceDefinition['tags'] ?? null) {
             $tagCode .= PHP_EOL . '\\' . TagMap::class . '::register(' . PHP_EOL;
@@ -119,6 +120,7 @@ final class ServiceProviderGenerator
             $tagCode .= ');';
             foreach ($serviceDefinition['tags'] as $tag) {
                 if (is_string($tag)) {
+                    $tags[] = $tag;
                     $tagCode .= PHP_EOL
                         . '$this->app->tag(['
                         . CodeUtils::renderString($serviceId)
@@ -127,6 +129,7 @@ final class ServiceProviderGenerator
                         . ');';
                 } elseif (is_array($tag)) {
                     if (isset($tag['name'])) {
+                        $tags[] = $tag['name'];
                         $tagCode .= PHP_EOL
                             . '$this->app->tag(['
                             . CodeUtils::renderString($serviceId)
@@ -146,6 +149,10 @@ final class ServiceProviderGenerator
         }
 
         $method = ($serviceDefinition['shared'] ?? false) ? '$this->app->bind' : '$this->registerSingleton';
+        if (in_array('always-singleton', $tags)) {
+            $method = '$this->app->singleton';
+        }
+        
         return $method . '(' . PHP_EOL
             . '    ' . CodeUtils::renderString($serviceId) . ',' . PHP_EOL
             . '    function ($app) {' . PHP_EOL

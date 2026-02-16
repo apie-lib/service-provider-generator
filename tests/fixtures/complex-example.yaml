@@ -47,7 +47,7 @@ services:
       - '@?Twig\Environment'
       - '%apie.cms.base_url%'
       - '%apie.cms.error_template%'
-    tags: ['kernel.event_subscriber']
+    tags: ['kernel.event_subscriber', 'always-singleton']
 
   Apie\Cms\RouteDefinitions\CmsRouteDefinitionProvider:
     tags: 
